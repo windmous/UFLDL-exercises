@@ -42,24 +42,43 @@ b2grad = zeros(size(b2));
 % the gradient descent update to W1 would be W1 := W1 - alpha * W1grad, and similarly for W2, b1, b2. 
 % 
 
+%% ---------- forward propgatin --------------------------------------
 
+sampleCount = size(data, 2);
 
+z2 = W1 * data;
+a2 = sigmoid(z2 + repmat(b1, 1, sampleCount));
 
+z3 = W2 * a2;
+a3 = sigmoid(z3 + repmat(b2, 1, sampleCount));
 
+diff = a3 - data;
+diffSquare = diff .* diff;
+squareCost = (1./sampleCount) * sum(0.5 .* sum(diffSquare, 1));
+weightDecay = 0.5 * (sum(sum(W1 .* W1)) + sum(sum(W2 .* W2)));
 
+avgRho = 1 ./ sampleCount * sum(a2, 2);
+KLDivergence = sum(sparsityParam * log(sparsityParam ./ avgRho) + (1 - sparsityParam) * log((1 - sparsityParam) ./ (1 - avgRho)));
 
+cost = squareCost + lambda * weightDecay + beta * KLDivergence;
 
+%% ---------- calculate gradient --------------------------------------
+delta3 = -(data - a3) .* a3 .* (1 - a3);
+delta2 = (W2' * delta3 + beta .* (-(sparsityParam ./ repmat(avgRho, 1, sampleCount)) + ...
+        (1 - sparsityParam) ./ (1 - repmat(avgRho,1, sampleCount)))) .* a2 .* (1 - a2);
 
+for i = 1 : sampleCount
+    W2grad = W2grad + delta3(:, i) * a2(:, i)';
+    b2grad = b2grad + delta3(:, i);
+    
+    W1grad = W1grad + delta2(:, i) * data(:, i)';
+    b1grad = b1grad + delta2(:, i);
+end
 
-
-
-
-
-
-
-
-
-
+W2grad = W2grad ./ sampleCount + lambda .* W2;
+W1grad = W1grad ./ sampleCount + lambda .* W1;
+b1grad = b1grad ./ sampleCount;
+b2grad = b2grad ./ sampleCount;
 %-------------------------------------------------------------------
 % After computing the cost and gradient, we will convert the gradients back
 % to a vector format (suitable for minFunc).  Specifically, we will unroll
@@ -75,7 +94,6 @@ end
 % column) vector (say (z1, z2, z3)) and returns (f(z1), f(z2), f(z3)). 
 
 function sigm = sigmoid(x)
-  
     sigm = 1 ./ (1 + exp(-x));
 end
 

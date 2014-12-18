@@ -8,7 +8,7 @@
 %  sparseAutoencoderCost.m and computeNumericalGradient.m. 
 %  For the purpose of completing the assignment, you do not need to
 %  change the code in this file. 
-%
+%()
 %%======================================================================
 %% STEP 0: Here we provide the relevant parameters values that will
 %  allow your sparse autoencoder to get good filters; you do not need to 

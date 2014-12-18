@@ -18,11 +18,24 @@ numgrad = zeros(size(theta));
 %                
 % Hint: You will probably want to compute the elements of numgrad one at a time. 
 
+EPSILON = 1e-4;
 
-
-
-
-
+for i = 1 : size(theta)
+   fprintf('Begin checking %d-th parameter\n', i)
+    
+   rtheta = theta;
+   rtheta(i) = rtheta(i) + EPSILON;
+   
+   ltheta = theta;
+   ltheta(i) = ltheta(i) - EPSILON;
+   
+   [rcost, rgrad] = J(rtheta);
+   [lcost, lgrad] = J(ltheta);
+   
+   numgrad(i) = (rcost - lcost) ./ (2 * EPSILON);
+   
+   fprintf('Finished checking %d-th parameter\n', i)
+end
 
 
 %% ---------------------------------------------------------------
