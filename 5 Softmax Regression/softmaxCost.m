@@ -31,7 +31,7 @@ expThetaX = exp(thetaX);
 prob = bsxfun(@rdivide, expThetaX, sum(expThetaX));
 
 cost = -(1 ./ sampleCount) * sum(sum((log(prob) .* groundTruth), 1)) + 0.5 * lambda * sum(sum(theta .* theta));
-thetagrad(:) = (-(1 ./ sampleCount) * data * (groundTruth - prob)')';
+thetagrad(:) = -(1 ./ sampleCount) * (groundTruth - prob) * data' + lambda * theta ;
 
 % ------------------------------------------------------------------
 % Unroll the gradient matrices into a vector for minFunc
