@@ -16,10 +16,10 @@ pred = zeros(1, size(data, 2));
 %                from 1.
 
 thetaX = theta * data;
-thetaX = bsxfun(@minus, thetaX, max(thetaX, [], 1));
-expThetaX = exp(thetaX);
-prob = bsxfun(@rdivide, expThetaX, sum(expThetaX, 1));
-[mv, pred(:)] = max(prob, [], 1);
+%thetaX = bsxfun(@minus, thetaX, max(thetaX, [], 1));
+%expThetaX = exp(thetaX);
+%prob = bsxfun(@rdivide, expThetaX, sum(expThetaX, 1));
+[mv, pred(:)] = max(thetaX, [], 1);
 
 % ---------------------------------------------------------------------
 
